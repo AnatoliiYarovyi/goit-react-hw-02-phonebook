@@ -6,7 +6,8 @@ const ContactList = ({ contacts }) => {
     <ul className={style.list}>
       {contacts.map(({ id, name, number }) => (
         <li key={id} className={style.item}>
-          {name}: {number}
+          <span className={style.textName}>{name}:</span>
+          <span className={style.textNamber}>{number}</span>
           <button type="button" className={style.button}>
             Delete
           </button>
