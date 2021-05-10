@@ -1,5 +1,6 @@
 import React from "react";
 import style from "./Filter.module.css";
+import PropTypes from "prop-types";
 
 const Filter = ({ filter, onHandleChenge }) => {
   return (
@@ -14,6 +15,11 @@ const Filter = ({ filter, onHandleChenge }) => {
       />
     </div>
   );
+};
+
+Filter.propTypes = {
+  filter: PropTypes.string,
+  onHandleChenge: PropTypes.func,
 };
 
 export default Filter;
