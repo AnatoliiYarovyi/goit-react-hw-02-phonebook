@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { v4 as uuidv4 } from "uuid";
 import style from "./App.module.css";
 import ContactForm from "./components/ContactForm";
 import Filter from "./components/Filter";
@@ -13,29 +14,40 @@ class App extends Component {
       { id: "id-4", name: "Annie Copeland", number: "227-91-26" },
     ],
     filter: "",
-    name: " ",
-    number: " ",
   };
-  // -------- єто по Репете --------
-  handleChenge = (event) => {
-    console.log(event.currentTarget.name);
-    console.log(event.currentTarget.value);
-    const { name, value } = event.currentTarget;
+
+  addContacts = (contactFormState) => {
+    const { name, number } = contactFormState;
+    const contact = {
+      id: uuidv4(),
+      name: name,
+      number: number,
+    };
+
+    const isRepeat = this.state.contacts.find(
+      ({ name }) => name === contactFormState.name
+    );
+    isRepeat
+      ? alert(`${name} is already in contacts`)
+      : this.setState((prevState) => ({
+          contacts: [contact, ...prevState.contacts],
+        }));
+  };
+  chengeFilter = (event) => {
+    const { value } = event.currentTarget;
     this.setState({
-      [name]: value,
+      filter: value,
     });
   };
-  // -----------------------
-
-  // chengeFilter = (event) => {
-  //   const { value } = event.currentTarget;
-  //   this.setState({
-  //     filter: value,
-  //   });
-  // };
+  deleteContacts = (contactId) => {
+    this.setState((prevState) => ({
+      contacts: prevState.contacts.filter(({ id }) => id !== contactId),
+    }));
+  };
 
   render() {
-    const { name, number, filter, contacts } = this.state;
+    const { filter, contacts } = this.state;
+
     const normalizedFilter = filter.toLowerCase();
     const visibleContacts = contacts.filter((contacts) =>
       contacts.name.toLowerCase().includes(normalizedFilter)
@@ -44,15 +56,14 @@ class App extends Component {
     return (
       <div className={style.conteiner}>
         <h1 className={style.title}>Phonebook</h1>
-        <ContactForm
-          name={name}
-          number={number}
-          onHandleChenge={this.handleChenge}
-        />
+        <ContactForm addContacts={this.addContacts} />
 
         <h2 className={style.caption}>Contacts</h2>
-        <Filter filter={filter} onHandleChenge={this.handleChenge} />
-        <ContactList contacts={visibleContacts} />
+        <Filter filter={filter} onHandleChenge={this.chengeFilter} />
+        <ContactList
+          contacts={visibleContacts}
+          deleteContacts={this.deleteContacts}
+        />
       </div>
     );
   }
